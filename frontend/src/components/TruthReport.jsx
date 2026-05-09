@@ -1,68 +1,98 @@
 import { Clock, BookOpen, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 export default function TruthReport({ report }) {
   if (!report) return null;
 
   return (
-    <div className="bg-surface border border-border rounded-xl shadow-sm overflow-hidden mb-8">
-      <div className="bg-ink text-surface p-6 flex items-center justify-between">
-        <h3 className="font-headline font-bold text-2xl tracking-wide flex items-center gap-3">
-          <BookOpen className="w-6 h-6" /> What Really Happened
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2 }}
+      className="bg-white border border-slate-200 rounded-2xl shadow-md overflow-hidden mb-8"
+    >
+      {/* Header */}
+      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-5 flex items-center justify-between">
+        <h3 className="font-headline font-bold text-xl text-white flex items-center gap-3">
+          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+            <BookOpen className="w-4 h-4 text-white" />
+          </div>
+          What Really Happened
         </h3>
-        <span className="font-mono text-xs opacity-70 uppercase tracking-widest">Verified Report</span>
+        <span className="text-white/60 text-xs font-medium uppercase tracking-widest border border-white/20 px-3 py-1 rounded-full">
+          Verified Report
+        </span>
       </div>
 
-      <div className="p-8 md:p-12">
-        {/* Newspaper style drop cap for the narrative */}
-        <div className="font-body text-lg leading-relaxed text-ink/90 prose-p:mb-6 first-letter:text-7xl first-letter:font-headline first-letter:font-bold first-letter:text-ink first-letter:mr-3 first-letter:float-left first-letter:leading-none">
+      <div className="p-8 md:p-10">
+        {/* Narrative with drop-cap */}
+        <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed first-letter:text-6xl first-letter:font-headline first-letter:font-bold first-letter:text-indigo-600 first-letter:mr-3 first-letter:float-left first-letter:leading-none">
           {report.what_really_happened.split('\n\n').map((para, idx) => (
-            <p key={idx}>{para}</p>
+            <p key={idx} className="mb-4 text-slate-700">{para}</p>
           ))}
         </div>
 
+        {/* Timeline */}
         {report.timeline && report.timeline.length > 0 && (
-          <div className="mt-12">
-            <h4 className="font-headline font-bold text-xl mb-6 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-ink/60" /> Verified Timeline
+          <div className="mt-10">
+            <h4 className="font-semibold text-slate-800 text-base mb-6 flex items-center gap-2">
+              <Clock className="w-4 h-4 text-indigo-500" />
+              Verified Timeline
             </h4>
-            <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-border before:to-transparent">
-              {report.timeline.map((event, idx) => (
-                <div key={idx} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-surface bg-ink text-surface shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
-                    <span className="font-mono text-xs">{idx + 1}</span>
-                  </div>
-                  <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-xl border border-border bg-bg/50 shadow-sm">
-                    <time className="font-mono text-xs text-ink/50 font-bold tracking-wider uppercase">{event.date}</time>
-                    <p className="font-body text-ink mt-1">{event.event}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="relative">
+              {/* Vertical line */}
+              <div className="absolute left-5 top-0 bottom-0 w-px bg-gradient-to-b from-indigo-300 via-purple-300 to-transparent" />
+
+              <div className="space-y-5">
+                {report.timeline.map((event, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.08 }}
+                    className="flex gap-4 relative"
+                  >
+                    {/* Dot */}
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xs font-bold shrink-0 shadow-md z-10">
+                      {idx + 1}
+                    </div>
+                    {/* Content */}
+                    <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl p-4 hover:border-indigo-200 hover:shadow-sm transition-all">
+                      <time className="text-xs font-bold text-indigo-600 uppercase tracking-wider">{event.date}</time>
+                      <p className="text-slate-700 text-sm mt-1 leading-relaxed">{event.event}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
+        {/* Original sources */}
         {report.original_sources && report.original_sources.length > 0 && (
-          <div className="mt-12 pt-8 border-t border-border">
-            <h4 className="font-mono text-sm font-bold uppercase tracking-wider text-ink/50 mb-4">
+          <div className="mt-10 pt-8 border-t border-slate-100">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-4">
               Read Original Verified Reporting
             </h4>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2.5">
               {report.original_sources.map((source, idx) => (
-                <a 
+                <a
                   key={idx}
                   href={source.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between p-4 rounded-lg border border-border hover:border-ink/50 transition-colors group bg-surface"
+                  className="flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50 hover:border-indigo-300 hover:bg-indigo-50 transition-all group"
                 >
-                  <span className="font-body font-medium text-ink">{source.title}</span>
-                  <ExternalLink className="w-5 h-5 text-ink/30 group-hover:text-ink transition-colors" />
+                  <span className="font-medium text-slate-700 text-sm group-hover:text-indigo-700 transition-colors">
+                    {source.title}
+                  </span>
+                  <ExternalLink className="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors shrink-0 ml-3" />
                 </a>
               ))}
             </div>
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
