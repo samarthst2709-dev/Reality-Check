@@ -14,6 +14,8 @@ import Modal from './components/Modal';
 import FloatingNodes from './components/FloatingNodes';
 
 // Real backend integration
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000';
+
 const realAnalyze = async (url, setProgress, setStep) => {
   try {
     let step = 0;
@@ -25,7 +27,7 @@ const realAnalyze = async (url, setProgress, setStep) => {
       }
     }, 1000);
 
-    const response = await fetch('http://localhost:8000/api/analyze', {
+    const response = await fetch(`${API_BASE}/api/analyze`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url }),
