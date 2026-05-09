@@ -1,0 +1,13 @@
+# Python/Backend
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/yt-dlp.exe
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Any other generic ignores
+node_modules/
